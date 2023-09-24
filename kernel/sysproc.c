@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "pstat.h"
 
 uint64
 sys_exit(void)
@@ -36,6 +37,17 @@ sys_wait(void)
   if(argaddr(0, &p) < 0)
     return -1;
   return wait(p);
+}
+
+uint64
+sys_wait2(void)
+{
+  uint64 p;
+  struct rusage r;
+  
+  if(argaddr(0, &p) < 0)
+    return -1;
+  return wait2(&p, &r);
 }
 
 uint64

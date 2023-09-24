@@ -1,7 +1,6 @@
 /* @author Christian Revilla
  * student ID 80580582
- * 
- * 
+ * returns the number of time ticks the program passed as argument used
  */
 
 #include "kernel/types.h"
