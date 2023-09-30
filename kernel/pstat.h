@@ -8,5 +8,5 @@ struct pstat {
 
 
 struct rusage {
-  uint64 cputime;
+  uint cputime;
 };

@@ -18,6 +18,7 @@ sub entry {
 entry("fork");
 entry("exit");
 entry("wait");
+entry("wait2");
 entry("pipe");
 entry("read");
 entry("write");
@@ -37,4 +38,4 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("getprocs");
-entry("wait2");
+
