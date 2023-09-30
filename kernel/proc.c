@@ -441,6 +441,8 @@ wait2(uint64 *addr, struct rusage *r)
   acquire(&wait_lock);
 
   for(;;){
+    r->cputime++;
+    printf("current cputime %d\n" , r->cputime);
     // Scan through table looking for exited children.
     havekids = 0;
     for(np = proc; np < &proc[NPROC]; np++){
@@ -461,7 +463,6 @@ wait2(uint64 *addr, struct rusage *r)
           freeproc(np);
           release(&np->lock);
           release(&wait_lock);
-          r->cputime += 1;
           return pid;
         }
         release(&np->lock);

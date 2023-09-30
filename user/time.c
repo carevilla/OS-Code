@@ -3,26 +3,30 @@
  * returns the number of time ticks the program passed as argument used
  */
 
+#include "kernel/param.h"
 #include "kernel/types.h"
 #include "kernel/stat.h"
+#include "kernel/pstat.h"
 #include "user/user.h"
 #include <stddef.h>
 
 int main(int argc, char **argv)
 {
   int start_t = 0, end_t, pid;
-  char *argv_list[] = { (char *) NULL, (char *) NULL, (char *) NULL };  /* empty arg list */
+  char *argv_list[] = { (char *) NULL };  /* empty arg list */
+  struct rusage r;
+  r.cputime = 1;
 
-  /* must have one argument or no more than 3 */
-  if((argc < 2) | (argc > 4)){
-    printf("usage: time1 <cmd> [paramters]\n");
+  /* must have at least 2 and no more than 3 argument only */
+  if(argc < 2){
+    fprintf(2, "usage: time argument\n");
     exit(1);
   }
 
-  /* enters here if only two arguments are given */
   if(argc == 2){
+
     start_t = uptime();   /* start clock */
-    pid = fork();         /* create child */
+    pid = fork();     /* create child */
 
     /* we are in the child process */
     if ( pid == 0 ) {
@@ -36,28 +40,24 @@ int main(int argc, char **argv)
     }
   }
 
-  /* enters here if 3 arguments were passed .. ex: "time1 sleep 10" */
   if(argc == 3){
+
     start_t = uptime();
     pid = fork();
-    
 
-    /* prep the arg list for exec system call in child */
     if(pid == 0){
-      argv_list[0] = argv[1];
-      argv_list[1] = argv[2];
       exec(argv[1],argv_list);
       exit(0);
     }
-    /* error in parent with fork(); */
-    else if( pid == -1){
+    else if (pid == -1){
       exit(-1);
     }
   }
 
   /* in parent waiting for child to finish, compute results */
-  wait(&pid);
+  wait2(&pid,&r);
   end_t = uptime();
   printf("elapsed time: %d ticks\n", (end_t - start_t));
+  printf("CPU time: %d\n" , r.cputime);
   exit(0);
 }

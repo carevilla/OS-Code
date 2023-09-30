@@ -44,6 +44,7 @@ sys_wait2(void)
 {
   uint64 p;
   struct rusage r;
+  r.cputime = 0;
   
   if(argaddr(0, &p) < 0)
     return -1;
