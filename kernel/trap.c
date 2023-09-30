@@ -51,7 +51,7 @@ usertrap(void)
   p->trapframe->epc = r_sepc();
 
   // increment cputime
-  p->cputime++;
+  p->cputime = p->cputime + 1;
   
   if(r_scause() == 8){
     // system call
@@ -155,7 +155,7 @@ kerneltrap()
   // increase cputime
   struct proc *p = myproc();
   if (p != 0){
-    p->cputime++;
+    p->cputime = p->cputime + 1;
   }
   
   // give up the CPU if this is a timer interrupt.
