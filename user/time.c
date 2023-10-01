@@ -12,52 +12,31 @@
 
 int main(int argc, char **argv)
 {
-  int start_t = 0, end_t, pid;
-  char *argv_list[] = { (char *) NULL };  /* empty arg list */
+  int start_t, end_t, elapsed_t, pid;
+  char *argv_list[] = { (char *) NULL, (char *) NULL, (char *) NULL };  /* empty arg list */
   struct rusage r;
-  r.cputime = 1;
 
   /* must have at least 2 and no more than 3 argument only */
   if(argc < 2){
-    fprintf(2, "usage: time argument\n");
+    fprintf(2, "usage: time <cmd> [cmd_argument]\n");
     exit(1);
   }
 
-  if(argc == 2){
-
-    start_t = uptime();   /* start clock */
-    pid = fork();     /* create child */
-
-    /* we are in the child process */
-    if ( pid == 0 ) {
-      exec(argv[1],argv_list);
-      exit(0);
-    }
+  for (int i=0; i<argc; ++i ) argv_list[i] = argv[i+1];
+  //for (int i=0; argv[i] != (char *) NULL; ++i )
+  //  fprintf(2, "argv[%d] = %s\n", i, argv_list[i]);
   
-    /* in parent but error occured in fork() */
-    else if ( pid == -1 ) {
-      exit(-1);
-    }
+  start_t = uptime();
+  pid = fork();
+  if ( pid == 0 ) {
+    exec(argv[1],argv_list);
+    exit(0);
   }
-
-  if(argc == 3){
-
-    start_t = uptime();
-    pid = fork();
-
-    if(pid == 0){
-      exec(argv[1],argv_list);
-      exit(0);
-    }
-    else if (pid == -1){
-      exit(-1);
-    }
-  }
-
+  
   /* in parent waiting for child to finish, compute results */
   wait2(&pid,&r);
   end_t = uptime();
-  printf("elapsed time: %d ticks\n", (end_t - start_t));
-  printf("CPU time: %d\n" , r.cputime);
+  elapsed_t = end_t-start_t;
+  printf("elapsed time: %d ticks, cputime: %d ticks, %d\% CPU\n", elapsed_t, r.cputime, (int) (100.0*r.cputime/elapsed_t));
   exit(0);
 }
