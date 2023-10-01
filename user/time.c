@@ -1,6 +1,8 @@
 /* @author Christian Revilla
  * student ID 80580582
  * returns the number of time ticks the program passed as argument used
+ * Outputs cpu time and cpu percentage usage
+ * calls wait2 system call in child different from time1 implementation
  */
 
 #include "kernel/param.h"
@@ -21,10 +23,9 @@ int main(int argc, char **argv)
     fprintf(2, "usage: time <cmd> [cmd_argument]\n");
     exit(1);
   }
-
+  
+  /* Build the argv_list for exec */
   for (int i=0; i<argc; ++i ) argv_list[i] = argv[i+1];
-  //for (int i=0; argv[i] != (char *) NULL; ++i )
-  //  fprintf(2, "argv[%d] = %s\n", i, argv_list[i]);
   
   start_t = uptime();
   pid = fork();
