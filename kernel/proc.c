@@ -291,6 +291,9 @@ fork(void)
   }
   np->sz = p->sz;
 
+  // copy priority from parent
+  np->priority = p->priority;
+  
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 
@@ -730,7 +733,6 @@ procinfo(uint64 addr)
     procinfo.pid = p->pid;
     procinfo.state = p->state;
     procinfo.size = p->sz;
-    procinfo.priority = p->priority;
     if (p->parent)
       procinfo.ppid = (p->parent)->pid;
     else
@@ -743,3 +745,24 @@ procinfo(uint64 addr)
   }
   return nprocs;
 }
+
+
+int
+setpriority(uint64 add)
+{
+  myproc()->priority = add;
+  return 0;
+}
+
+
+int
+getpriority(uint64 add)
+{
+  struct proc *p;
+
+  for(p = proc; p < &proc[NPROC]; p++)
+    if(p->pid == add) return p->priority;
+
+  return -1;
+}
+

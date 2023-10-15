@@ -8,19 +8,23 @@ main(int argc, char *argv[])
 {
     int i, rc;
     char *newargv[MAXARGS];
-    // int priority;
+    int priority;
 
     if(argc < 3){
         printf("Usage: pexec <priority> <comm> [args...]\n");
         exit(-1);
     }
 
-    // priority = atoi(argv[1]);
-    //setpriority(priority);
-    for(i=2; i<argc; i++)
-    newargv[i-2] = argv[i];
+    priority = atoi(argv[1]);
+    setpriority(priority);
+
+    for(i=2; i<argc; i++) newargv[i-2] = argv[i];
     newargv[argc-2] = 0;
 
+    //printf("argc: %d\n", argc);
+    //for (int i=0; i<argc-1; ++i ) printf("%s ", newargv[i]);
+    //printf("\n");
+    
     rc = fork();
     if (rc == 0)
         exec(newargv[0], newargv);

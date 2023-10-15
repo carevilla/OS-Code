@@ -60,16 +60,18 @@ sys_getpriority(void)
   uint64 p;
   if(argaddr(0, &p) < 0)
     return -1;
-  return wait(p);
+  return getpriority(p);
 }
 
 uint64
 sys_setpriority(void)
 {
   uint64 p;
+  
   if(argaddr(0, &p) < 0)
     return -1;
-  return wait(p);
+
+  return setpriority(p);
 }
 
 uint64
@@ -131,7 +133,7 @@ sys_uptime(void)
 }
 
 // return the number of active processes in the system
-// fill in user-provided data structure with pid,state,sz,ppid,name
+// fill in user-provided data structure with pid,state,sz,ppid,name,priority
 uint64
 sys_getprocs(void)
 {
