@@ -55,6 +55,24 @@ sys_wait2(void)
 }
 
 uint64
+sys_getpriority(void)
+{
+  uint64 p;
+  if(argaddr(0, &p) < 0)
+    return -1;
+  return wait(p);
+}
+
+uint64
+sys_setpriority(void)
+{
+  uint64 p;
+  if(argaddr(0, &p) < 0)
+    return -1;
+  return wait(p);
+}
+
+uint64
 sys_sbrk(void)
 {
   int addr;
