@@ -510,6 +510,9 @@ scheduler(void)
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+        // Task 2. set the readytime to the current time when process
+        // enters RUNNABLE state.
+        p->readytime = ticks;
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
@@ -733,6 +736,7 @@ procinfo(uint64 addr)
     procinfo.pid = p->pid;
     procinfo.state = p->state;
     procinfo.size = p->sz;
+    procinfo.readytime = p->readytime; // Task 2.
     if (p->parent)
       procinfo.ppid = (p->parent)->pid;
     else
