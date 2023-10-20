@@ -36,7 +36,7 @@ main(int argc, char **argv)
           printf("\t");
           break;
       }
-      printf("\t%d\t\t%d\t%s\n", getpriority(uproc[i].pid), uproc[i].ppid,
+      printf("%d\t\t%d\t%s\n", getpriority(uproc[i].pid), uproc[i].ppid,
            uproc[i].name);
   }
   exit(0);

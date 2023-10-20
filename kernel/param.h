@@ -12,4 +12,9 @@
 #define FSSIZE       1000  // size of file system in blocks
 #define MAXPATH      128   // maximum file path name
 
+#ifdef PRIORITY
+#define MAXPRIORITY  49 // Task 3. maximum settable priority
+#define MAXEFFPRIORITY 99  // Task 3. maximum priority
+#endif
+
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };

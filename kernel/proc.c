@@ -489,6 +489,29 @@ wait2(uint64 addr, uint64 addr2)
   }
 }
 
+// Task 3. Add a priority scheduler. This function returns the highest priority
+// task in the queue
+#ifdef PRIORITY
+struct proc *highest_priority() {
+  struct proc *p;
+  struct proc *h = 0; // initialize to null
+  int peff, heff;
+  for (p=proc, h=proc; p< &proc[NPROC]; p++ ) {
+    
+    peff = p->priority+(ticks-p->readytime);
+    if ( peff >= MAXEFFPRIORITY ) peff = MAXEFFPRIORITY;
+    heff = p->priority+(ticks-p->readytime);
+    if ( heff >= MAXEFFPRIORITY ) heff = MAXEFFPRIORITY;
+    //p->priority = peff;
+    //h->priority = heff;
+    if ( (p->state == RUNNABLE) && (heff <= peff) ) h = p;
+    
+    //if ( (p->state == RUNNABLE) && (h->priority <= p->priority) ) h = p;
+  }
+  return h;
+}
+#endif
+
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
@@ -501,15 +524,32 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
+
+  #ifdef PRIORITY
+  struct proc *h;
+  #endif
   
   c->proc = 0;
   for(;;){
     // Avoid deadlock by ensuring that devices can interrupt.
     intr_on();
-
+    
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+        #ifdef PRIORITY
+        // Task 3. Implement priority-based scheduler.
+        h = highest_priority();
+
+        if ( p->pid != h->pid ) {
+          //printf("round-robin: %d p: %d eff: %d priority-sched: %d p: %d eff: %d\n",
+          //       p->pid, p->priority, (p->priority+ticks-p->readytime),
+          //       h->pid, h->priority, (h->priority+ticks-h->readytime));
+          release(&p->lock); // release lock from round-robin
+          p = h; // override the choice
+          acquire(&p->lock); // get a new lock...
+        }
+        #endif
         // Task 2. set the readytime to the current time when process
         // enters RUNNABLE state.
         p->readytime = ticks;
@@ -523,6 +563,11 @@ scheduler(void)
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
+
+        //#ifdef PRIORITY
+        //release(&p->lock);
+        //break; // reset round-robin pointer
+        //#endif
       }
       release(&p->lock);
     }
@@ -754,6 +799,9 @@ procinfo(uint64 addr)
 int
 setpriority(uint64 add)
 {
+  #ifdef PRIORITY
+  if ( add > MAXPRIORITY ) add = MAXPRIORITY;
+  #endif
   myproc()->priority = add;
   return 0;
 }

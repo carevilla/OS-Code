@@ -110,6 +110,10 @@ int             procinfo(uint64);
 int             setpriority(uint64);
 int             getpriority(uint64);
 
+#ifdef PRIORITY
+struct proc *   highest_priority(void); // Task 3. implement priority scheduler
+#endif
+
 // swtch.S
 void            swtch(struct context*, struct context*);
 
