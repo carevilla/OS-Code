@@ -497,15 +497,16 @@ struct proc *highest_priority() {
   struct proc *h = 0; // initialize to null
   int peff, heff;
   for (p=proc, h=proc; p< &proc[NPROC]; p++ ) {
-    
+    // Task 4. implement aging...
     peff = p->priority+(ticks-p->readytime);
     if ( peff >= MAXEFFPRIORITY ) peff = MAXEFFPRIORITY;
     heff = p->priority+(ticks-p->readytime);
     if ( heff >= MAXEFFPRIORITY ) heff = MAXEFFPRIORITY;
-    //p->priority = peff;
-    //h->priority = heff;
     if ( (p->state == RUNNABLE) && (heff <= peff) ) h = p;
-    
+    p->priority = peff;
+    h->priority = heff;
+
+    // Task 3. implement priortiy replaced by ageing above.
     //if ( (p->state == RUNNABLE) && (h->priority <= p->priority) ) h = p;
   }
   return h;
@@ -542,9 +543,6 @@ scheduler(void)
         h = highest_priority();
 
         if ( p->pid != h->pid ) {
-          //printf("round-robin: %d p: %d eff: %d priority-sched: %d p: %d eff: %d\n",
-          //       p->pid, p->priority, (p->priority+ticks-p->readytime),
-          //       h->pid, h->priority, (h->priority+ticks-h->readytime));
           release(&p->lock); // release lock from round-robin
           p = h; // override the choice
           acquire(&p->lock); // get a new lock...
@@ -563,11 +561,6 @@ scheduler(void)
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-
-        //#ifdef PRIORITY
-        //release(&p->lock);
-        //break; // reset round-robin pointer
-        //#endif
       }
       release(&p->lock);
     }
