@@ -54,7 +54,6 @@ int             readi(struct inode*, int, uint64, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, int, uint64, uint, uint);
 void            itrunc(struct inode*);
-
 // ramdisk.c
 void            ramdiskinit(void);
 void            ramdiskintr(void);
@@ -64,6 +63,7 @@ void            ramdiskrw(struct buf*);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
+uint64          countPage(void);
 
 // log.c
 void            initlog(int, struct superblock*);
