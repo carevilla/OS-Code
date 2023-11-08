@@ -85,7 +85,7 @@ sys_sbrk(void)
 
   addr = myproc()->sz; // current size
   
-  if((addr+n) > TRAPFRAME)
+  if((addr+n) > TRAPFRAME) // Task 2 modifications
     return -1;
   
   myproc()->sz = addr+n;
