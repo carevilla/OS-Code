@@ -1,6 +1,7 @@
 #include "kernel/types.h"
 #include "user/user.h"
 
+/* uncommented code to test lazy allocation */
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         printf("Usage: memory-user <start> <limit> <increment>, where <start> is initial mebibytes to allocate which is then incremented up to limit mebibytes\n");
