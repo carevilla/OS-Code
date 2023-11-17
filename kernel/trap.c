@@ -75,8 +75,6 @@ usertrap(void)
     uint64 FaultAddr = r_stval();
 
     if( FaultAddr < p->sz){
-      //printf("invalid memory access address at %p\n",addr);
-      //p->killed = 1;
       char* PhysicalFrame = kalloc();
       if (PhysicalFrame == 0){
         // Allocation failed
@@ -89,11 +87,7 @@ usertrap(void)
         mappages(p->pagetable, PGROUNDDOWN(FaultAddr), PGSIZE,(uint64)PhysicalFrame, (PTE_R | PTE_W | PTE_X | PTE_U));
       }
     }
-    
-    // p->killed = 1;
   }
-
-
 
   else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
