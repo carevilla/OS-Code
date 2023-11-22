@@ -86,7 +86,7 @@ usertrap(void)
         // Clear the contents of page
         memset((void*)PhysicalFrame, 0 ,PGSIZE);
         //Map the virtual page to newly allocated memory
-        mappages(p->pagetable, PGROUNDDOWN(FaultAddr), PGSIZE,(uint64)PhysicalFrame, (PTE_R | PTE_W | PTE_X | PTE_U));
+        mappages(p->pagetable, PGROUNDDOWN(FaultAddr), PGSIZE, (uint64)PhysicalFrame, (PTE_R | PTE_W | PTE_X | PTE_U));
         //printf("successfully executed mappages\n");
       }
     }

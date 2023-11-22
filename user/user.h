@@ -31,6 +31,8 @@ int getprocs(struct pstat*);
 int getpriority(int);
 int setpriority(int);
 int freepmem(void);
+uint64 mmap(uint64, uint64, int, int);
+int munmap(uint64, uint64);
 
 
 // ulib.c

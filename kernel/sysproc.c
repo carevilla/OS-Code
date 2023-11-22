@@ -7,6 +7,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "pstat.h"
+//#include "sysfile.c"
 
 uint64
 sys_exit(void)

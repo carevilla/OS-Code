@@ -41,5 +41,7 @@ entry("getprocs");
 entry("setpriority");
 entry("getpriority");
 entry("freepmem");
+entry("mmap");
+entry("munmap");
 
 

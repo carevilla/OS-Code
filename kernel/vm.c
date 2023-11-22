@@ -126,6 +126,7 @@ walkaddr(pagetable_t pagetable, uint64 va)
 void
 kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
 {
+  printf("kvmmap: calling mappages: size=%d\n",sz);
   if(mappages(kpgtbl, va, sz, pa, perm) != 0)
     panic("kvmmap");
 }
@@ -141,7 +142,7 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
   pte_t *pte;
 
   if(size == 0)
-    panic("mappages: size");
+    panic("mappages: size=0");
   
   a = PGROUNDDOWN(va);
   last = PGROUNDDOWN(va + size - 1);
@@ -441,4 +442,29 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   } else {
     return -1;
   }
+}
+
+
+// Allocate page table pages for PTEs if needed but leave valid bits unchanged Hw5 added
+int
+mapvpages(pagetable_t pagetable, uint64 va, uint64 size)
+{
+  uint64 a, last;
+  pte_t *pte;
+
+  if(size == 0)
+    panic("mappages: size");
+
+  a = PGROUNDDOWN(va);
+  last = PGROUNDDOWN(va + size - 1);
+  for(;;){
+    if((pte = walk(pagetable, a, 1)) == 0)
+      return -1;
+    if(*pte & PTE_V)
+      panic("mappages: remap");
+    if(a == last)
+      break;
+    a += PGSIZE;
+  }
+  return 0;
 }

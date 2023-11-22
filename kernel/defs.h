@@ -109,6 +109,10 @@ void            procdump(void);
 int             procinfo(uint64);
 int             setpriority(uint64);
 int             getpriority(uint64);
+struct mmr_list* get_mmr_list(int);
+int             alloc_mmr_listid(void);
+void            dealloc_mmr_listid(int);
+void            mmrlistinit(void);
 
 #ifdef PRIORITY
 struct proc *   highest_priority(void); // Task 3. implement priority scheduler
@@ -179,6 +183,7 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+int             mapvpages(pagetable_t, uint64, uint64);
 
 // plic.c
 void            plicinit(void);
